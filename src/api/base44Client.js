@@ -19,10 +19,50 @@ if (import.meta.env.VITE_BASE44_APP_BASE_URL || appId) {
   const mockDeclarations = [];
   let idCounter = 1;
 
+  const STORAGE_KEY = 'mock_auth_user';
+  function getCurrentUserId() {
+    try {
+      const s = sessionStorage.getItem(STORAGE_KEY);
+      if (!s) return null;
+      const u = JSON.parse(s);
+      return u?.id || null;
+    } catch { return null; }
+  }
+
+  // Helper to create a realistic mock declaration
+  function makeDeclaration(overrides = {}) {
+    const now = new Date().toISOString();
+    return {
+      id: String(idCounter++),
+      nombre_completo: overrides.nombre_completo || 'Juan Pérez',
+      rut: overrides.rut || '11.111.111-1',
+      vuelo_llegada: overrides.vuelo_llegada || 'LA1234',
+      codigo_qr: overrides.codigo_qr || `AD-${Math.random().toString(36).slice(2,10).toUpperCase()}`,
+      bienes: overrides.bienes || [{ tipo: 'Electrónica', descripcion: 'Teléfono', cantidad: 1, valor_estimado: 300 }],
+      menores_a_cargo: overrides.menores_a_cargo || [],
+      documentos_presentados: overrides.documentos_presentados || [],
+      valor_total: overrides.valor_total || 300,
+      estado: overrides.estado || 'pendiente',
+      created_date: overrides.created_date || now,
+      created_by_id: overrides.created_by_id || getCurrentUserId() || 'mock-viajero-001',
+      titulo: overrides.titulo || 'Declaración demo'
+    };
+  }
+
+  // Seed a few declarations for demo: one by viajero, two by others
+  mockDeclarations.push(makeDeclaration({ nombre_completo: 'Juan Pérez', rut: '12.345.678-9', vuelo_llegada: 'LA1001', estado: 'pendiente', created_by_id: 'mock-viajero-001' }));
+  mockDeclarations.push(makeDeclaration({ nombre_completo: 'María López', rut: '98.765.432-1', vuelo_llegada: 'LA2002', estado: 'en_revision', created_by_id: 'mock-admin-001' }));
+  mockDeclarations.push(makeDeclaration({ nombre_completo: 'Carlos Ruiz', rut: '22.333.444-5', vuelo_llegada: 'LA3003', estado: 'aprobado', created_by_id: 'mock-admin-001' }));
+
   _base44 = {
     auth: {
       async me() {
-        return { id: 'user1', email: 'demo@example.com', name: 'Demo User' };
+        // If session mock exists, return it; otherwise generic demo user
+        try {
+          const s = sessionStorage.getItem(STORAGE_KEY);
+          if (s) return JSON.parse(s);
+        } catch {}
+        return { id: 'mock-viajero-001', email: 'viajero@test.cl', full_name: 'Juan Pérez' };
       },
       async resetPasswordRequest(email) { return {}; },
       async resetPassword({ resetToken, newPassword }) { return {}; },
@@ -36,13 +76,22 @@ if (import.meta.env.VITE_BASE44_APP_BASE_URL || appId) {
     entities: {
       Declaration: {
         async list(_sort = '-created_date', limit = 50) {
-          return mockDeclarations.slice(0, limit);
+          // simple sort by created_date desc
+          return mockDeclarations.slice().sort((a, b) => new Date(b.created_date) - new Date(a.created_date)).slice(0, limit);
         },
-        async filter(_query, _sort = '-created_date', limit = 50) {
-          return mockDeclarations.slice(0, limit);
+        async filter(query = {}, _sort = '-created_date', limit = 50) {
+          let results = mockDeclarations.slice();
+          if (query && query.created_by_id) {
+            results = results.filter(d => String(d.created_by_id) === String(query.created_by_id));
+          }
+          // support basic estado filter
+          if (query && query.estado) {
+            results = results.filter(d => d.estado === query.estado);
+          }
+          return results.slice(0, limit);
         },
         async create(data) {
-          const item = { id: String(idCounter++), ...data, created_date: new Date().toISOString() };
+          const item = makeDeclaration({ ...data, created_by_id: data.created_by_id || getCurrentUserId() || 'mock-viajero-001' });
           mockDeclarations.unshift(item);
           return item;
         },
@@ -54,9 +103,6 @@ if (import.meta.env.VITE_BASE44_APP_BASE_URL || appId) {
       }
     }
   };
-
-  // Seed demo data
-  mockDeclarations.push({ id: '1', titulo: 'Declaración demo', estado: 'pendiente', created_date: new Date().toISOString(), created_by_id: 'user1' });
 }
 
 export const base44 = _base44;
