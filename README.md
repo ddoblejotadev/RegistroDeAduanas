@@ -29,6 +29,13 @@ Flujo recomendado en una PC nueva
 4. Ejecutar `npm run dev`.
 5. Abrir la URL local que indique Vite.
 
+Instalar Node con nvm-windows
+1. Descargar e instalar nvm-windows desde su repositorio oficial.
+2. Abrir PowerShell o CMD como usuario normal.
+3. Ejecutar `nvm install 14.18.0`.
+4. Ejecutar `nvm use 14.18.0`.
+5. Confirmar con `node -v` y volver a correr `npm install` dentro del proyecto.
+
 Cuentas de prueba
 - viajero@test.cl — contraseña: viajero123
 - admin@aduana.cl — contraseña: admin123
