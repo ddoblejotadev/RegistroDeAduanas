@@ -1,0 +1,138 @@
+{
+  "name": "Declaration",
+  "type": "object",
+  "properties": {
+    "nombre_completo": {
+      "type": "string",
+      "description": "Nombre completo del viajero"
+    },
+    "rut": {
+      "type": "string",
+      "description": "RUT o n\u00famero de documento del viajero"
+    },
+    "tipo_documento": {
+      "type": "string",
+      "enum": [
+        "RUT",
+        "Pasaporte",
+        "C\u00e9dula de Identidad",
+        "Otro"
+      ],
+      "description": "Tipo de documento de identidad"
+    },
+    "nacionalidad": {
+      "type": "string",
+      "description": "Nacionalidad del viajero"
+    },
+    "fecha_nacimiento": {
+      "type": "string",
+      "format": "date",
+      "description": "Fecha de nacimiento del viajero"
+    },
+    "vuelo_llegada": {
+      "type": "string",
+      "description": "N\u00famero de vuelo de llegada"
+    },
+    "pais_origen": {
+      "type": "string",
+      "description": "Pa\u00eds de procedencia del vuelo"
+    },
+    "fecha_llegada": {
+      "type": "string",
+      "format": "date",
+      "description": "Fecha estimada de llegada"
+    },
+    "menores_a_cargo": {
+      "type": "array",
+      "description": "Menores de edad que viajan con el titular",
+      "items": {
+        "type": "object",
+        "properties": {
+          "nombre_completo": {
+            "type": "string"
+          },
+          "documento": {
+            "type": "string"
+          },
+          "tipo_documento": {
+            "type": "string"
+          },
+          "fecha_nacimiento": {
+            "type": "string",
+            "format": "date"
+          },
+          "parentesco": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "documentos_presentados": {
+      "type": "array",
+      "description": "Documentos que el viajero indica que presentar\u00e1",
+      "items": {
+        "type": "string",
+        "enum": [
+          "Pasaporte",
+          "Visa",
+          "Tarjeta de Residencia",
+          "Permiso de Menor",
+          "Certificado de Vacunaci\u00f3n",
+          "Seguro de Viaje",
+          "Boletos de Avi\u00f3n",
+          "Declaraci\u00f3n Jurada"
+        ]
+      }
+    },
+    "bienes": {
+      "type": "array",
+      "description": "Lista de bienes declarados",
+      "items": {
+        "type": "object",
+        "properties": {
+          "tipo": {
+            "type": "string"
+          },
+          "descripcion": {
+            "type": "string"
+          },
+          "cantidad": {
+            "type": "number"
+          },
+          "valor_estimado": {
+            "type": "number"
+          }
+        }
+      }
+    },
+    "valor_total": {
+      "type": "number",
+      "description": "Valor total declarado en USD"
+    },
+    "estado": {
+      "type": "string",
+      "enum": [
+        "pendiente",
+        "en_revision",
+        "aprobado",
+        "rechazado"
+      ],
+      "default": "pendiente",
+      "description": "Estado de la declaraci\u00f3n"
+    },
+    "codigo_qr": {
+      "type": "string",
+      "description": "C\u00f3digo identificador para el QR"
+    },
+    "notas_funcionario": {
+      "type": "string",
+      "description": "Notas del funcionario aduanero"
+    }
+  },
+  "required": [
+    "nombre_completo",
+    "rut",
+    "nacionalidad",
+    "vuelo_llegada"
+  ]
+}
