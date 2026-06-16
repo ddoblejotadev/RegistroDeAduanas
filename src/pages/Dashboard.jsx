@@ -4,7 +4,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 import { BarChart3, FileCheck, FileX, Clock, FileSearch, Package, CalendarDays, TrendingUp, TrendingDown } from "lucide-react";
 import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, PieChart, Pie, Cell, Legend } from "recharts";
-import { format, subDays, startOfDay, isToday, isYesterday } from "date-fns";
+import { format, subDays, startOfDay } from "date-fns";
 import { es } from "date-fns/locale";
 import StatCard from "@/components/dashboard/StatCard";
 

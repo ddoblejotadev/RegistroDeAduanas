@@ -5,7 +5,7 @@ import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Input } from "@/components/ui/input";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Card, CardContent } from "@/components/ui/card";
-import { ClipboardList, Search, Inbox, Clock, CheckCircle, XCircle, Eye, CalendarDays, TrendingUp } from "lucide-react";
+import { ClipboardList, Search, Inbox, Clock, CheckCircle, Eye, CalendarDays, TrendingUp } from "lucide-react";
 import DeclarationCard from "@/components/panel/DeclarationCard";
 import { startOfDay, subDays } from "date-fns";
 

@@ -1,4 +1,3 @@
-import { Label } from "@/components/ui/label";
 import { FileCheck, Info } from "lucide-react";
 
 const DOCUMENTOS = [

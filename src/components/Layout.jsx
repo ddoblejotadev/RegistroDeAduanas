@@ -1,6 +1,5 @@
 import { Outlet, Link, useLocation } from "react-router-dom";
 import { useAuth } from "@/lib/MockAuthContext";
-import { base44 } from "@/api/base44Client";
 import { Shield, Plane, BarChart3, ClipboardList, LogOut, Menu, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useState } from "react";
