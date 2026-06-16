@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button";
 import { useState } from "react";
 
 export default function Layout() {
-  const { user } = useAuth();
+  const { user, logout } = useAuth();
   const location = useLocation();
   const [mobileOpen, setMobileOpen] = useState(false);
 
@@ -23,7 +23,8 @@ export default function Layout() {
       ];
 
   const handleLogout = () => {
-    base44.auth.logout("/login");
+    // Use the auth context logout so both mock and real SDK flows are handled
+    logout();
   };
 
   return (
