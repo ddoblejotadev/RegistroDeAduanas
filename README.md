@@ -8,11 +8,26 @@ Características principales
 - Modo demo local: mock de API y autenticación para presentación sin backend.
 
 Rápido inicio (5 minutos)
+Requisito: Node.js 14.18 o superior.
 1. git clone https://github.com/ddoblejotadev/RegistroDeAduanas
 2. cd RegistroDeAduanas
 3. npm install
 4. npm run dev
 5. Abrir http://localhost:5173 (o la URL que muestre Vite)
+
+Notas de compatibilidad
+- El repo incluye [.nvmrc](.nvmrc) y una verificación automática para asegurar Node.js 14.18 o superior antes de instalar.
+- El lockfile está fijado en formato 2 para que `npm install` funcione también en máquinas con npm más antiguo.
+- En Windows, si la PC de la U tiene una versión vieja de Node, instala Node 14.18.0 con nvm-windows y después corre `npm install` otra vez.
+- Si `npm run dev` muestra un puerto distinto, abre la URL exacta que imprime Vite.
+- Si algo falla después de clonar, borra `node_modules` y vuelve a ejecutar `npm install` desde la carpeta del proyecto.
+
+Flujo recomendado en una PC nueva
+1. Instalar Node 14.18.0 o superior.
+2. Abrir una terminal dentro de la carpeta del repo.
+3. Ejecutar `npm install`.
+4. Ejecutar `npm run dev`.
+5. Abrir la URL local que indique Vite.
 
 Cuentas de prueba
 - viajero@test.cl — contraseña: viajero123
