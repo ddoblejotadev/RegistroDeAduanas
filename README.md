@@ -9,10 +9,17 @@ Características principales
 
 Rápido inicio (5 minutos)
 Requisito: Node.js 18 o superior.
-1. git clone https://github.com/ddoblejotadev/RegistroDeAduanas
-2. cd RegistroDeAduanas
-3. npm install
-4. npm run dev
+
+Opción A — Doble clic (recomendado para PCs compartidas)
+1. Cloná el repo o descargalo como ZIP y extraé la carpeta.
+2. Hacé doble clic en `start.bat` (Windows) o `start.ps1`.
+3. Se abre el navegador en http://localhost:5173.
+
+Opción B — Manual
+1. `git clone https://github.com/ddoblejotadev/RegistroDeAduanas`
+2. `cd RegistroDeAduanas`
+3. `npm install`
+4. `npm run dev`
 5. Abrir http://localhost:5173 (o la URL que muestre Vite)
 
 Notas de compatibilidad
