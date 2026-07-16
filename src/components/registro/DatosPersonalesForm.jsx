@@ -16,6 +16,38 @@ const TIPOS_VIAJE = [
   { value: "salida", label: "Salida de Chile" },
 ];
 
+function formatRut(value) {
+  // Keep only digits and k/K
+  let cleaned = value.replace(/[^0-9kK]/g, "");
+  if (!cleaned) return "";
+
+  let dv = "";
+  let body = cleaned;
+
+  // Determine if last char is the check digit (DV)
+  const last = cleaned.charAt(cleaned.length - 1);
+  const isLastK = last === "k" || last === "K";
+  const hasExcessDigits = cleaned.replace(/[^0-9]/g, "").length > 8;
+
+  if (isLastK) {
+    dv = "K";
+    body = cleaned.slice(0, -1);
+  } else if (hasExcessDigits) {
+    dv = last;
+    body = cleaned.slice(0, -1);
+  }
+
+  // Limit body to 8 digits and format with dots from right
+  body = body.replace(/[^0-9]/g, "").slice(0, 8);
+  if (body.length > 3) {
+    body = body
+      .replace(/^(\d{1,3})(\d{3})(\d{3})$/, "$1.$2.$3")
+      .replace(/^(\d{1,3})(\d{3})$/, "$1.$2");
+  }
+
+  return dv ? `${body}-${dv}` : body;
+}
+
 export default function DatosPersonalesForm({ data, onChange }) {
   const update = (field, value) => onChange({ ...data, [field]: value });
 
@@ -52,7 +84,7 @@ export default function DatosPersonalesForm({ data, onChange }) {
           <Input
             placeholder="Ej: 12.345.678-9"
             value={data.rut || ""}
-            onChange={(e) => update("rut", e.target.value)}
+            onChange={(e) => update("rut", formatRut(e.target.value))}
           />
         </div>
 

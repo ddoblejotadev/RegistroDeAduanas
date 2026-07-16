@@ -8,7 +8,8 @@ import { Badge } from "@/components/ui/badge";
 import { Switch } from "@/components/ui/switch";
 import { Label } from "@/components/ui/label";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Car, Package, Send, Loader2, ClipboardList, Clock, QrCode, Users, FileCheck } from "lucide-react";
+import { Car, Package, Send, Loader2, ClipboardList, Clock, QrCode, Users, FileCheck, Download } from "lucide-react";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 import { toast } from "@/components/ui/use-toast";
 import { format } from "date-fns";
 import { es } from "date-fns/locale";
@@ -52,6 +53,12 @@ export default function PortalViajero() {
   const [bienes, setBienes] = useState([]);
   const [vehiculo, setVehiculo] = useState(null);
   const [alimentosOMascotas, setAlimentosOMascotas] = useState(false);
+  const [viewingQrDecl, setViewingQrDecl] = useState(null);
+
+  const getQrUrl = (decl) =>
+    decl ? `https://api.qrserver.com/v1/create-qr-code/?size=250x250&data=${encodeURIComponent(
+      `ADUANA-DIGITAL|${decl.codigo_qr}|${decl.nombre_completo}|${decl.rut}|${decl.paso_fronterizo}|${decl.pais_destino}`
+    )}` : "";
 
   const { data: misDeclaraciones = [], refetch } = useQuery({
     queryKey: ["mis-declaraciones", user?.id],
@@ -267,6 +274,12 @@ export default function PortalViajero() {
                           Valor Total: <span className="text-primary">${d.valor_total?.toLocaleString("es-CL") || "0"} USD</span>
                         </p>
                       </div>
+                      <div className="flex flex-col gap-1.5">
+                        <Button variant="outline" size="sm" className="text-xs h-8"
+                          onClick={(e) => { e.stopPropagation(); setViewingQrDecl(d); }}>
+                          <QrCode className="w-3.5 h-3.5 mr-1.5" /> Ver QR
+                        </Button>
+                      </div>
                     </div>
                   </CardContent>
                 </Card>
@@ -275,6 +288,57 @@ export default function PortalViajero() {
           )}
         </div>
       )}
+
+      {/* QR Dialog from Mis Declaraciones */}
+      <Dialog open={!!viewingQrDecl} onOpenChange={(open) => { if (!open) setViewingQrDecl(null); }}>
+        <DialogContent className="max-w-xs sm:max-w-sm">
+          <DialogHeader>
+            <DialogTitle className="flex items-center gap-2">
+              <QrCode className="w-5 h-5" /> Código QR
+            </DialogTitle>
+            <DialogDescription>
+              Declaración: {viewingQrDecl?.codigo_qr}
+            </DialogDescription>
+          </DialogHeader>
+
+          {viewingQrDecl && (
+            <div className="flex flex-col items-center gap-4 py-2">
+              <div className="inline-block p-3 bg-white rounded-xl shadow-md border">
+                <img
+                  src={getQrUrl(viewingQrDecl)}
+                  alt="QR de declaración"
+                  className="w-44 sm:w-48 h-44 sm:h-48 mx-auto"
+                />
+              </div>
+
+              <div className="grid grid-cols-2 gap-2 w-full text-xs">
+                <div className="p-2 rounded-lg bg-muted">
+                  <p className="text-[10px] text-muted-foreground">Viajero</p>
+                  <p className="font-semibold truncate">{viewingQrDecl.nombre_completo}</p>
+                </div>
+                <div className="p-2 rounded-lg bg-muted">
+                  <p className="text-[10px] text-muted-foreground">RUT</p>
+                  <p className="font-semibold">{viewingQrDecl.rut}</p>
+                </div>
+                <div className="p-2 rounded-lg bg-muted">
+                  <p className="text-[10px] text-muted-foreground">Paso</p>
+                  <p className="font-semibold truncate">{viewingQrDecl.paso_fronterizo}</p>
+                </div>
+                <div className="p-2 rounded-lg bg-muted">
+                  <p className="text-[10px] text-muted-foreground">Destino</p>
+                  <p className="font-semibold">{viewingQrDecl.pais_destino}</p>
+                </div>
+              </div>
+
+              <Button variant="outline" size="sm" asChild className="w-full">
+                <a href={getQrUrl(viewingQrDecl)} download={`qr-${viewingQrDecl.codigo_qr}.png`} target="_blank" rel="noopener noreferrer">
+                  <Download className="w-4 h-4 mr-2" /> Descargar QR
+                </a>
+              </Button>
+            </div>
+          )}
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }
