@@ -31,7 +31,7 @@ La app está disponible en GitHub Pages:
 https://ddoblejotadev.github.io/RegistroDeAduanas/
 ```
 
-Se actualiza automáticamente al hacer push a `main`.
+Se actualiza automáticamente al hacer push a `main` (via GitHub Actions con Vite build).
 
 ## Inicio rápido (5 minutos)
 
