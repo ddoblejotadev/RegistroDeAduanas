@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -7,6 +8,7 @@ import AuthLayout from "@/components/AuthLayout";
 import { mockLogin, mockRegister } from "@/lib/MockAuthContext";
 
 export default function Login() {
+  const navigate = useNavigate();
   const [tab, setTab] = useState("login"); // "login" | "register"
 
   // Login state
@@ -28,7 +30,7 @@ export default function Login() {
     setLoading(true);
     try {
       const user = mockLogin(email, password);
-      window.location.href = (user.role === "funcionario" || user.role === "admin") ? "/panel" : "/";
+      navigate((user.role === "funcionario" || user.role === "admin") ? "/panel" : "/");
     } catch (err) {
       setError(err.message || "Credenciales incorrectas.");
     } finally {
@@ -50,7 +52,7 @@ export default function Login() {
     setLoading(true);
     try {
       mockRegister(regEmail, regPassword, regName);
-      window.location.href = "/";
+      navigate("/");
     } catch (err) {
       setError(err.message);
     } finally {

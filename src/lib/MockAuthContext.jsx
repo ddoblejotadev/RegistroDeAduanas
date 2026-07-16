@@ -70,11 +70,11 @@ export const AuthProvider = ({ children }) => {
     sessionStorage.removeItem(STORAGE_KEY);
     setUser(null);
     setIsAuthenticated(false);
-    window.location.href = "/login";
+    window.location.hash = "#/login";
   };
 
   const navigateToLogin = () => {
-    window.location.href = "/login";
+    window.location.hash = "#/login";
   };
 
   return (

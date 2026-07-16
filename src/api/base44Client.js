@@ -71,8 +71,8 @@ export const base44 = {
     async verifyOtp({ email, otpCode }) { return { access_token: 'mocktoken' }; },
     setToken() {},
     logout() {},
-    loginWithProvider(provider, redirect) { window.location.href = redirect || '/'; },
-    redirectToLogin() { window.location.href = '/login'; }
+    loginWithProvider(provider, redirect) { window.location.hash = "#/login"; },
+    redirectToLogin() { window.location.hash = "#/login"; }
   },
   entities: {
     Declaration: {
