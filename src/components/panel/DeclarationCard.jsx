@@ -52,7 +52,9 @@ export default function DeclarationCard({ declaration, onStatusChange, onDerivar
   const [notas, setNotas] = useState(declaration.notas_funcionario || "");
   const status = STATUS_CONFIG[declaration.estado] || STATUS_CONFIG.pendiente;
   const valorTotal = declaration.valor_total || declaration.bienes?.reduce((s, b) => s + (b.valor_estimado || 0) * (b.cantidad || 1), 0) || 0;
-  const canDerivarSAG = declaration.estado === "en_revision" && declaration.alimentos_o_mascotas;
+  const canDerivarSAG = declaration.estado === "en_revision" && (
+    declaration.alimentos_o_mascotas || declaration.bienes?.some(b => b.requiere_sag)
+  );
   const canDerivarPDI = declaration.estado === "en_revision";
 
   const handleNotasBlur = () => {
