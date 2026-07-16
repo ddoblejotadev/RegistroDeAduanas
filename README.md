@@ -1,5 +1,7 @@
 # Registro de Aduanas — Paso Los Libertadores
 
+[![Live Demo](https://img.shields.io/badge/demo-online-brightgreen?logo=github)](https://ddoblejotadev.github.io/RegistroDeAduanas/)
+
 Aplicación de demostración (proyecto universitario) para gestionar declaraciones aduaneras en el **Paso Los Libertadores** (frontera Chile-Argentina). Soporta tres roles: **Viajero**, **Funcionario de Aduanas** y **Administrador**.
 
 Incluye flujo completo desde la llegada del viajero hasta el cruce fronterizo, con derivaciones a SAG y PDI/Migraciones cuando corresponde.
@@ -25,11 +27,9 @@ Incluye flujo completo desde la llegada del viajero hasta el cruce fronterizo, c
 
 ## Demo online
 
-La app está disponible en GitHub Pages:
+La app está disponible en **GitHub Pages**:
 
-```
-https://ddoblejotadev.github.io/RegistroDeAduanas/
-```
+👉 [https://ddoblejotadev.github.io/RegistroDeAduanas/](https://ddoblejotadev.github.io/RegistroDeAduanas/)
 
 Se actualiza automáticamente al hacer push a `main` (via GitHub Actions con Vite build).
 
