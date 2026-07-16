@@ -5,10 +5,12 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { LogIn, Lock, Loader2, Shield, Mail, User, UserPlus } from "lucide-react";
 import AuthLayout from "@/components/AuthLayout";
-import { mockLogin, mockRegister } from "@/lib/MockAuthContext";
+import { mockRegister } from "@/lib/MockAuthContext";
+import { useAuth } from "@/lib/MockAuthContext";
 
 export default function Login() {
   const navigate = useNavigate();
+  const { login } = useAuth();
   const [tab, setTab] = useState("login"); // "login" | "register"
 
   // Login state
@@ -29,7 +31,7 @@ export default function Login() {
     setError("");
     setLoading(true);
     try {
-      const user = mockLogin(email, password);
+      const user = login(email, password);
       navigate((user.role === "funcionario" || user.role === "admin") ? "/panel" : "/");
     } catch (err) {
       setError(err.message || "Credenciales incorrectas.");

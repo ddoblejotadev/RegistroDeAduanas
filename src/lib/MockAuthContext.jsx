@@ -66,6 +66,13 @@ export const AuthProvider = ({ children }) => {
     await checkUserAuth();
   };
 
+  const login = (email, password) => {
+    const userData = mockLogin(email, password);
+    setUser(userData);
+    setIsAuthenticated(true);
+    return userData;
+  };
+
   const logout = () => {
     sessionStorage.removeItem(STORAGE_KEY);
     setUser(null);
@@ -86,6 +93,7 @@ export const AuthProvider = ({ children }) => {
       authError,
       appPublicSettings,
       authChecked,
+      login,
       logout,
       navigateToLogin,
       checkUserAuth,
