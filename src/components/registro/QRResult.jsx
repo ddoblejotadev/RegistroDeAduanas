@@ -4,6 +4,8 @@ import { Badge } from "@/components/ui/badge";
 import { CheckCircle2, Download, QrCode, Car, MapPin, Flag, ArrowLeftRight } from "lucide-react";
 import { motion } from "framer-motion";
 
+const TIPO_VIAJE_LABEL = { ingreso: "Ingreso a Chile", salida: "Salida de Chile" };
+
 export default function QRResult({ declaration, onNewDeclaration }) {
   const qrUrl = `https://api.qrserver.com/v1/create-qr-code/?size=250x250&data=${encodeURIComponent(
     `ADUANA-DIGITAL|${declaration.codigo_qr}|${declaration.nombre_completo}|${declaration.rut}|${declaration.paso_fronterizo}|${declaration.pais_destino}`
@@ -59,7 +61,7 @@ export default function QRResult({ declaration, onNewDeclaration }) {
             </div>
             <div className="p-3 rounded-lg bg-muted">
               <p className="text-xs text-muted-foreground flex items-center gap-1"><ArrowLeftRight className="w-3 h-3" /> Viaje</p>
-              <p className="font-semibold">{declaration.tipo_viaje}</p>
+              <p className="font-semibold">{TIPO_VIAJE_LABEL[declaration.tipo_viaje] || declaration.tipo_viaje}</p>
             </div>
             <div className="p-3 rounded-lg bg-muted">
               <p className="text-xs text-muted-foreground">Bienes</p>

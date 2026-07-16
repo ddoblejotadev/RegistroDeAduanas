@@ -11,7 +11,10 @@ const NACIONALIDADES = [
 
 const TIPOS_DOCUMENTO = ["RUT", "Pasaporte", "Cédula de Identidad", "Otro"];
 
-const TIPOS_VIAJE = ["Ingreso a Chile", "Salida de Chile"];
+const TIPOS_VIAJE = [
+  { value: "ingreso", label: "Ingreso a Chile" },
+  { value: "salida", label: "Salida de Chile" },
+];
 
 export default function DatosPersonalesForm({ data, onChange }) {
   const update = (field, value) => onChange({ ...data, [field]: value });
@@ -108,7 +111,7 @@ export default function DatosPersonalesForm({ data, onChange }) {
             <SelectTrigger><SelectValue placeholder="Seleccione tipo de viaje" /></SelectTrigger>
             <SelectContent>
               {TIPOS_VIAJE.map((t) => (
-                <SelectItem key={t} value={t}>{t}</SelectItem>
+                <SelectItem key={t.value} value={t.value}>{t.label}</SelectItem>
               ))}
             </SelectContent>
           </Select>
