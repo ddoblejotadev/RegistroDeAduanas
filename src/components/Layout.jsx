@@ -16,6 +16,7 @@ export default function Layout() {
     ? [
         { path: "/panel", label: "Declaraciones", icon: ClipboardList },
         { path: "/estadisticas", label: "Estadísticas", icon: BarChart3 },
+        ...(role === "admin" ? [{ path: "/administrador", label: "Administración", icon: Shield }] : []),
       ]
     : [
         { path: "/", label: "Mi Portal", icon: Plane },

@@ -1,7 +1,7 @@
 import { Toaster } from "@/components/ui/toaster"
 import { QueryClientProvider } from '@tanstack/react-query'
 import { queryClientInstance } from '@/lib/query-client'
-import { BrowserRouter as Router, Route, Routes, Navigate } from 'react-router-dom';
+import { HashRouter as Router, Route, Routes, Navigate } from 'react-router-dom';
 import PageNotFound from './lib/PageNotFound';
 import { AuthProvider as RealAuthProvider, useAuth as useRealAuth } from '@/lib/AuthContext';
 import { AuthProvider, useAuth } from '@/lib/MockAuthContext';
@@ -16,6 +16,7 @@ import RoleGuard from '@/components/RoleGuard';
 import PortalViajero from '@/pages/PortalViajero';
 import PanelFuncionario from '@/pages/PanelFuncionario';
 import Dashboard from '@/pages/Dashboard';
+import PanelAdministrador from '@/pages/PanelAdministrador';
 
 const AuthenticatedApp = () => {
   const { isLoadingAuth, isLoadingPublicSettings, authError, navigateToLogin } = useAuth();
@@ -59,6 +60,11 @@ const AuthenticatedApp = () => {
           <Route path="/estadisticas" element={
             <RoleGuard allowedRoles={["funcionario", "admin"]}>
               <Dashboard />
+            </RoleGuard>
+          } />
+          <Route path="/administrador" element={
+            <RoleGuard allowedRoles={["admin"]}>
+              <PanelAdministrador />
             </RoleGuard>
           } />
         </Route>

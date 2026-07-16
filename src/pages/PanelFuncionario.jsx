@@ -5,7 +5,7 @@ import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Input } from "@/components/ui/input";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Card, CardContent } from "@/components/ui/card";
-import { ClipboardList, Search, Inbox, Clock, CheckCircle, Eye, CalendarDays, TrendingUp } from "lucide-react";
+import { ClipboardList, Search, Inbox, Clock, CheckCircle, Eye, CalendarDays, TrendingUp, ArrowRight } from "lucide-react";
 import DeclarationCard from "@/components/panel/DeclarationCard";
 import { startOfDay, subDays } from "date-fns";
 
@@ -13,6 +13,8 @@ const TABS = [
   { value: "todos", label: "Todos" },
   { value: "pendiente", label: "Pendiente" },
   { value: "en_revision", label: "En Revisión" },
+  { value: "derivado_sag", label: "Derivado SAG" },
+  { value: "derivado_pdi", label: "Derivado PDI" },
   { value: "aprobado", label: "Aprobado" },
   { value: "rechazado", label: "Rechazado" },
 ];
@@ -32,8 +34,26 @@ export default function PanelFuncionario() {
     onSuccess: () => queryClient.invalidateQueries({ queryKey: ["declarations"] }),
   });
 
+  const derivarMutation = useMutation({
+    mutationFn: ({ id, entidad }) => base44.entities.Declaration.derivar(id, entidad),
+    onSuccess: () => queryClient.invalidateQueries({ queryKey: ["declarations"] }),
+  });
+
+  const notasMutation = useMutation({
+    mutationFn: ({ id, notas }) => base44.entities.Declaration.update(id, { notas_funcionario: notas }),
+    onSuccess: () => queryClient.invalidateQueries({ queryKey: ["declarations"] }),
+  });
+
   const handleStatusChange = (id, estado) => {
     updateMutation.mutate({ id, estado });
+  };
+
+  const handleDerivar = (id, entidad) => {
+    derivarMutation.mutate({ id, entidad });
+  };
+
+  const handleNotasChange = (id, notas) => {
+    notasMutation.mutate({ id, notas });
   };
 
   const filtered = declarations.filter((d) => {
@@ -42,8 +62,9 @@ export default function PanelFuncionario() {
       !search ||
       d.nombre_completo?.toLowerCase().includes(search.toLowerCase()) ||
       d.rut?.toLowerCase().includes(search.toLowerCase()) ||
-      d.vuelo_llegada?.toLowerCase().includes(search.toLowerCase()) ||
-      d.codigo_qr?.toLowerCase().includes(search.toLowerCase());
+      d.codigo_qr?.toLowerCase().includes(search.toLowerCase()) ||
+      d.derivado_a?.toLowerCase().includes(search.toLowerCase()) ||
+      d.paso_fronterizo?.toLowerCase().includes(search.toLowerCase());
     return matchTab && matchSearch;
   });
 
@@ -51,6 +72,8 @@ export default function PanelFuncionario() {
     todos: declarations.length,
     pendiente: declarations.filter((d) => d.estado === "pendiente").length,
     en_revision: declarations.filter((d) => d.estado === "en_revision").length,
+    derivado_sag: declarations.filter((d) => d.estado === "derivado_sag").length,
+    derivado_pdi: declarations.filter((d) => d.estado === "derivado_pdi").length,
     aprobado: declarations.filter((d) => d.estado === "aprobado").length,
     rechazado: declarations.filter((d) => d.estado === "rechazado").length,
   };
@@ -72,6 +95,7 @@ export default function PanelFuncionario() {
     { label: "Últimos 7 días", value: semana, icon: ClipboardList, color: "text-blue-600", bg: "bg-blue-50" },
     { label: "Pendientes", value: counts.pendiente, icon: Clock, color: "text-amber-600", bg: "bg-amber-50" },
     { label: "En Revisión", value: counts.en_revision, icon: Eye, color: "text-sky-600", bg: "bg-sky-50" },
+    { label: "Derivadas", value: counts.derivado_sag + counts.derivado_pdi, icon: ArrowRight, color: "text-orange-600", bg: "bg-orange-50" },
     { label: "Aprobadas", value: counts.aprobado, icon: CheckCircle, color: "text-emerald-600", bg: "bg-emerald-50" },
   ];
 
@@ -88,7 +112,7 @@ export default function PanelFuncionario() {
         <div className="relative w-full sm:w-72">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
           <Input
-            placeholder="Buscar por nombre, RUT, vuelo..."
+            placeholder="Buscar por nombre, RUT, código..."
             className="pl-9"
             value={search}
             onChange={(e) => setSearch(e.target.value)}
@@ -97,7 +121,7 @@ export default function PanelFuncionario() {
       </div>
 
       {/* Tarjetas de resumen */}
-      <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3">
+      <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-7 gap-3">
         {summaryCards.map((card) => {
           const Icon = card.icon;
           return (
@@ -141,7 +165,13 @@ export default function PanelFuncionario() {
       ) : (
         <div className="space-y-3">
           {filtered.map((d) => (
-            <DeclarationCard key={d.id} declaration={d} onStatusChange={handleStatusChange} />
+            <DeclarationCard
+              key={d.id}
+              declaration={d}
+              onStatusChange={handleStatusChange}
+              onDerivar={handleDerivar}
+              onNotasChange={handleNotasChange}
+            />
           ))}
         </div>
       )}

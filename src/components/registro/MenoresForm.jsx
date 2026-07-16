@@ -1,6 +1,7 @@
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
+import { Checkbox } from "@/components/ui/checkbox";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Plus, Trash2, Users } from "lucide-react";
 
@@ -9,7 +10,7 @@ const TIPOS_DOC = ["RUT", "Pasaporte", "Cédula de Identidad"];
 
 export default function MenoresForm({ menores, onChange }) {
   const addMenor = () => {
-    onChange([...menores, { nombre_completo: "", tipo_documento: "", documento: "", fecha_nacimiento: "", parentesco: "" }]);
+    onChange([...menores, { nombre_completo: "", tipo_documento: "", documento: "", fecha_nacimiento: "", parentesco: "", autorizacion_notarial: false }]);
   };
 
   const removeMenor = (index) => {
@@ -89,6 +90,17 @@ export default function MenoresForm({ menores, onChange }) {
                   </SelectContent>
                 </Select>
               </div>
+            </div>
+
+            <div className="flex items-center gap-2 pt-1">
+              <Checkbox
+                id={`autorizacion-${index}`}
+                checked={menor.autorizacion_notarial || false}
+                onCheckedChange={(checked) => updateMenor(index, "autorizacion_notarial", checked)}
+              />
+              <Label htmlFor={`autorizacion-${index}`} className="text-xs cursor-pointer">
+                ¿Tiene autorización notarial?
+              </Label>
             </div>
           </div>
         ))

@@ -1,12 +1,15 @@
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { CheckCircle2, Download, QrCode } from "lucide-react";
+import { Badge } from "@/components/ui/badge";
+import { CheckCircle2, Download, QrCode, Car, MapPin, Flag, ArrowLeftRight } from "lucide-react";
 import { motion } from "framer-motion";
 
 export default function QRResult({ declaration, onNewDeclaration }) {
   const qrUrl = `https://api.qrserver.com/v1/create-qr-code/?size=250x250&data=${encodeURIComponent(
-    `ADUANA-DIGITAL|${declaration.codigo_qr}|${declaration.nombre_completo}|${declaration.rut}|${declaration.vuelo_llegada}`
+    `ADUANA-DIGITAL|${declaration.codigo_qr}|${declaration.nombre_completo}|${declaration.rut}|${declaration.paso_fronterizo}|${declaration.pais_destino}`
   )}`;
+
+  const vehiculo = declaration.vehiculo;
 
   return (
     <motion.div
@@ -47,8 +50,16 @@ export default function QRResult({ declaration, onNewDeclaration }) {
               <p className="font-semibold truncate">{declaration.nombre_completo}</p>
             </div>
             <div className="p-3 rounded-lg bg-muted">
-              <p className="text-xs text-muted-foreground">Vuelo</p>
-              <p className="font-semibold">{declaration.vuelo_llegada}</p>
+              <p className="text-xs text-muted-foreground flex items-center gap-1"><MapPin className="w-3 h-3" /> Paso</p>
+              <p className="font-semibold truncate">{declaration.paso_fronterizo}</p>
+            </div>
+            <div className="p-3 rounded-lg bg-muted">
+              <p className="text-xs text-muted-foreground flex items-center gap-1"><Flag className="w-3 h-3" /> Destino</p>
+              <p className="font-semibold">{declaration.pais_destino}</p>
+            </div>
+            <div className="p-3 rounded-lg bg-muted">
+              <p className="text-xs text-muted-foreground flex items-center gap-1"><ArrowLeftRight className="w-3 h-3" /> Viaje</p>
+              <p className="font-semibold">{declaration.tipo_viaje}</p>
             </div>
             <div className="p-3 rounded-lg bg-muted">
               <p className="text-xs text-muted-foreground">Bienes</p>
@@ -59,6 +70,24 @@ export default function QRResult({ declaration, onNewDeclaration }) {
               <p className="font-semibold">${declaration.valor_total?.toLocaleString("es-CL")}</p>
             </div>
           </div>
+
+          {vehiculo && (
+            <div className="p-3 rounded-lg bg-muted space-y-1.5">
+              <p className="text-xs text-muted-foreground flex items-center gap-1"><Car className="w-3 h-3" /> Vehículo</p>
+              <p className="font-semibold text-sm">{vehiculo.patente} — {vehiculo.tipo_permiso}</p>
+              {vehiculo.plazo_dias && (
+                <p className="text-xs text-muted-foreground">Plazo: {vehiculo.plazo_dias} días</p>
+              )}
+            </div>
+          )}
+
+          {declaration.derivado_a && (
+            <div className="p-3 rounded-lg bg-amber-50 border border-amber-200">
+              <p className="text-xs font-medium text-amber-700">
+                Derivado a: {declaration.derivado_a}
+              </p>
+            </div>
+          )}
 
           <div className="flex gap-3 pt-2">
             <Button variant="outline" className="flex-1" asChild>

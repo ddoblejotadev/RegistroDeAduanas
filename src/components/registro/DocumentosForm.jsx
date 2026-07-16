@@ -1,14 +1,14 @@
 import { FileCheck, Info } from "lucide-react";
 
 const DOCUMENTOS = [
+  { id: "Cédula de Identidad", label: "Cédula de Identidad", desc: "Documento de identificación nacional" },
   { id: "Pasaporte", label: "Pasaporte", desc: "Requerido para viajeros extranjeros" },
-  { id: "Visa", label: "Visa de Ingreso", desc: "Según su nacionalidad y destino" },
-  { id: "Tarjeta de Residencia", label: "Tarjeta de Residencia", desc: "Para residentes permanentes" },
-  { id: "Permiso de Menor", label: "Permiso Notarial de Menor", desc: "Solo si viaja con menores sin ambos padres presentes" },
+  { id: "Permiso de Circulación", label: "Permiso de Circulación", desc: "Para vehículos nacionales" },
+  { id: "Seguro del Automóvil", label: "Seguro del Automóvil", desc: "SOAP o seguro fronterizo vigente" },
   { id: "Certificado de Vacunación", label: "Certificado de Vacunación", desc: "Según normativas sanitarias vigentes" },
-  { id: "Seguro de Viaje", label: "Seguro de Viaje", desc: "Recomendado para cubrir eventualidades" },
-  { id: "Boletos de Avión", label: "Boletos / Itinerario de Vuelo", desc: "Confirmación de reserva de vuelos" },
-  { id: "Declaración Jurada", label: "Declaración Jurada Aduanera", desc: "Para bienes de valor significativo" },
+  { id: "Permiso de Menor", label: "Permiso Notarial de Menor", desc: "Solo si viaja con menores sin ambos padres presentes" },
+  { id: "Declaración Jurada de Alimentos", label: "Declaración Jurada de Alimentos", desc: "Para ingreso de productos alimenticios" },
+  { id: "Documentación del Vehículo", label: "Documentación del Vehículo", desc: "Padrón, título o autorización de uso" },
 ];
 
 export default function DocumentosForm({ documentos, onChange }) {

@@ -5,8 +5,10 @@ import { useQuery } from "@tanstack/react-query";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import { Switch } from "@/components/ui/switch";
+import { Label } from "@/components/ui/label";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Plane, Package, Send, Loader2, ClipboardList, Clock, QrCode, Users, FileCheck } from "lucide-react";
+import { Car, Package, Send, Loader2, ClipboardList, Clock, QrCode, Users, FileCheck } from "lucide-react";
 import { toast } from "@/components/ui/use-toast";
 import { format } from "date-fns";
 import { es } from "date-fns/locale";
@@ -14,6 +16,7 @@ import DatosPersonalesForm from "@/components/registro/DatosPersonalesForm";
 import BienesForm from "@/components/registro/BienesForm";
 import MenoresForm from "@/components/registro/MenoresForm";
 import DocumentosForm from "@/components/registro/DocumentosForm";
+import VehiculoForm from "@/components/registro/VehiculoForm";
 import QRResult from "@/components/registro/QRResult";
 
 const STATUS_CONFIG = {
@@ -32,7 +35,7 @@ function generateCode() {
 
 const EMPTY_DATOS = {
   nombre_completo: "", rut: "", tipo_documento: "", nacionalidad: "",
-  fecha_nacimiento: "", vuelo_llegada: "", pais_origen: "", fecha_llegada: ""
+  fecha_nacimiento: "", paso_fronterizo: "Paso Los Libertadores", pais_destino: "", tipo_viaje: ""
 };
 
 export default function PortalViajero() {
@@ -45,6 +48,8 @@ export default function PortalViajero() {
   const [menores, setMenores] = useState([]);
   const [documentos, setDocumentos] = useState([]);
   const [bienes, setBienes] = useState([]);
+  const [vehiculo, setVehiculo] = useState(null);
+  const [alimentosOMascotas, setAlimentosOMascotas] = useState(false);
 
   const { data: misDeclaraciones = [], refetch } = useQuery({
     queryKey: ["mis-declaraciones", user?.id],
@@ -52,7 +57,7 @@ export default function PortalViajero() {
     enabled: !!user?.id,
   });
 
-  const canSubmit = datos.nombre_completo && datos.rut && datos.nacionalidad && datos.vuelo_llegada;
+  const canSubmit = datos.nombre_completo && datos.rut && datos.nacionalidad && datos.paso_fronterizo && datos.pais_destino && datos.tipo_viaje;
 
   const handleSubmit = async () => {
     if (!canSubmit) {
@@ -65,8 +70,9 @@ export default function PortalViajero() {
     const declaration = await base44.entities.Declaration.create({
       ...datos, menores_a_cargo: menores, documentos_presentados: documentos,
       bienes, valor_total: valorTotal, estado: "pendiente", codigo_qr: codigo,
+      vehiculo, alimentos_o_mascotas: alimentosOMascotas,
     });
-    setResult({ ...declaration, codigo_qr: codigo, ...datos, bienes, valor_total: valorTotal });
+    setResult({ ...declaration, codigo_qr: codigo, ...datos, bienes, valor_total: valorTotal, vehiculo, alimentos_o_mascotas: alimentosOMascotas });
     setStep("result");
     setSubmitting(false);
     refetch();
@@ -77,6 +83,8 @@ export default function PortalViajero() {
     setMenores([]);
     setDocumentos([]);
     setBienes([]);
+    setVehiculo(null);
+    setAlimentosOMascotas(false);
     setResult(null);
     setStep("form");
     setActiveTab("nuevo");
@@ -86,13 +94,13 @@ export default function PortalViajero() {
     <div className="max-w-2xl mx-auto space-y-6">
       <div className="text-center space-y-2">
         <h1 className="text-3xl font-bold font-heading text-foreground">Portal del Viajero</h1>
-        <p className="text-muted-foreground">Gestione sus declaraciones aduaneras</p>
+        <p className="text-muted-foreground">Gestione sus declaraciones aduaneras — Paso Los Libertadores</p>
       </div>
 
       <Tabs value={activeTab} onValueChange={(v) => { setActiveTab(v); setStep("form"); }}>
         <TabsList className="w-full">
           <TabsTrigger value="nuevo" className="flex-1">
-            <Plane className="w-4 h-4 mr-2" /> Nueva Declaración
+            <Car className="w-4 h-4 mr-2" /> Nueva Declaración
           </TabsTrigger>
           <TabsTrigger value="mis" className="flex-1">
             <ClipboardList className="w-4 h-4 mr-2" /> Mis Declaraciones ({misDeclaraciones.length})
@@ -110,7 +118,7 @@ export default function PortalViajero() {
               <Card>
                 <CardHeader className="pb-4">
                   <CardTitle className="flex items-center gap-2 text-lg">
-                    <Plane className="w-5 h-5 text-primary" /> Datos del Viajero
+                    <Car className="w-5 h-5 text-primary" /> Datos del Viajero
                   </CardTitle>
                 </CardHeader>
                 <CardContent>
@@ -148,7 +156,22 @@ export default function PortalViajero() {
                 </CardContent>
               </Card>
 
-              {/* Sección 4: Bienes */}
+              {/* Sección 4: Vehículo */}
+              <Card>
+                <CardHeader className="pb-4">
+                  <CardTitle className="flex items-center gap-2 text-lg">
+                    <Car className="w-5 h-5 text-primary" /> Vehículo
+                    {vehiculo && (
+                      <Badge variant="secondary" className="ml-auto text-xs">{vehiculo.patente}</Badge>
+                    )}
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <VehiculoForm vehiculo={vehiculo} onChange={setVehiculo} />
+                </CardContent>
+              </Card>
+
+              {/* Sección 5: Bienes */}
               <Card>
                 <CardHeader className="pb-4">
                   <CardTitle className="flex items-center gap-2 text-lg">
@@ -160,6 +183,27 @@ export default function PortalViajero() {
                 </CardHeader>
                 <CardContent>
                   <BienesForm bienes={bienes} onChange={setBienes} />
+                </CardContent>
+              </Card>
+
+              {/* Sección 6: Alimentos o Mascotas */}
+              <Card>
+                <CardHeader className="pb-4">
+                  <CardTitle className="flex items-center gap-2 text-lg">
+                    <Package className="w-5 h-5 text-primary" /> Declaración de Alimentos o Mascotas
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className="flex items-center gap-3">
+                    <Switch
+                      id="alimentos-mascotas"
+                      checked={alimentosOMascotas}
+                      onCheckedChange={setAlimentosOMascotas}
+                    />
+                    <Label htmlFor="alimentos-mascotas" className="text-sm cursor-pointer">
+                      ¿Ingresa alimentos o mascotas al país?
+                    </Label>
+                  </div>
                 </CardContent>
               </Card>
 
@@ -191,13 +235,14 @@ export default function PortalViajero() {
           ) : (
             misDeclaraciones.map((d) => {
               const status = STATUS_CONFIG[d.estado] || STATUS_CONFIG.pendiente;
+              const dv = d.vehiculo;
               return (
                 <Card key={d.id} className="hover:shadow-md transition-shadow">
                   <CardContent className="p-5">
                     <div className="flex items-start justify-between gap-3">
                       <div className="space-y-2 flex-1">
                         <div className="flex items-center gap-2 flex-wrap">
-                          <span className="font-semibold text-sm">{d.vuelo_llegada}</span>
+                          <span className="font-semibold text-sm">{d.paso_fronterizo} → {d.pais_destino}</span>
                           <Badge className={`${status.className} border text-xs`}>{status.label}</Badge>
                         </div>
                         <div className="flex flex-wrap gap-x-4 gap-y-1 text-xs text-muted-foreground">
@@ -205,6 +250,12 @@ export default function PortalViajero() {
                           <span className="flex items-center gap-1"><Package className="w-3.5 h-3.5" /> {d.bienes?.length || 0} bienes</span>
                           {d.menores_a_cargo?.length > 0 && (
                             <span className="flex items-center gap-1"><Users className="w-3.5 h-3.5" /> {d.menores_a_cargo.length} menor(es)</span>
+                          )}
+                          {dv && (
+                            <span className="flex items-center gap-1"><Car className="w-3.5 h-3.5" /> {dv.patente}</span>
+                          )}
+                          {d.alimentos_o_mascotas && (
+                            <Badge variant="outline" className="text-[10px] h-5">Alimentos/Mascotas</Badge>
                           )}
                           <span className="flex items-center gap-1"><Clock className="w-3.5 h-3.5" />
                             {d.created_date ? format(new Date(d.created_date), "dd MMM yyyy, HH:mm", { locale: es }) : "—"}

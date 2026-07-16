@@ -2,13 +2,13 @@ import { base44 } from "@/api/base44Client";
 import { useQuery } from "@tanstack/react-query";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
-import { BarChart3, FileCheck, FileX, Clock, FileSearch, Package, CalendarDays, TrendingUp, TrendingDown } from "lucide-react";
+import { BarChart3, FileCheck, FileX, Clock, FileSearch, Package, CalendarDays, TrendingUp, TrendingDown, ArrowRight } from "lucide-react";
 import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, PieChart, Pie, Cell, Legend } from "recharts";
 import { format, subDays, startOfDay } from "date-fns";
 import { es } from "date-fns/locale";
 import StatCard from "@/components/dashboard/StatCard";
 
-const PIE_COLORS = ["hsl(217, 91%, 48%)", "hsl(160, 60%, 45%)", "hsl(0, 84%, 60%)", "hsl(43, 96%, 56%)"];
+const PIE_COLORS = ["hsl(217, 91%, 48%)", "hsl(160, 60%, 45%)", "hsl(0, 84%, 60%)", "hsl(43, 96%, 56%)", "hsl(24, 90%, 55%)", "hsl(271, 70%, 55%)"];
 
 export default function Dashboard() {
   const { data: declarations = [], isLoading } = useQuery({
@@ -34,6 +34,8 @@ export default function Dashboard() {
   const total = declarations.length;
   const pendientes = declarations.filter((d) => d.estado === "pendiente").length;
   const enRevision = declarations.filter((d) => d.estado === "en_revision").length;
+  const derivadoSag = declarations.filter((d) => d.estado === "derivado_sag").length;
+  const derivadoPdi = declarations.filter((d) => d.estado === "derivado_pdi").length;
   const aprobados = declarations.filter((d) => d.estado === "aprobado").length;
   const rechazados = declarations.filter((d) => d.estado === "rechazado").length;
 
@@ -57,6 +59,8 @@ export default function Dashboard() {
   const statusData = [
     { name: "Pendiente", value: pendientes },
     { name: "En Revisión", value: enRevision },
+    { name: "Derivado SAG", value: derivadoSag },
+    { name: "Derivado PDI", value: derivadoPdi },
     { name: "Aprobado", value: aprobados },
     { name: "Rechazado", value: rechazados },
   ].filter((d) => d.value > 0);
@@ -139,11 +143,13 @@ export default function Dashboard() {
       </div>
 
       {/* Métricas por estado */}
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+      <div className="grid grid-cols-2 lg:grid-cols-6 gap-4">
         <StatCard title="Total" value={total} icon={FileSearch} color="bg-primary" subtitle="Declaraciones" />
         <StatCard title="Pendientes" value={pendientes} icon={Clock} color="bg-amber-500" subtitle="Por revisar" />
+        <StatCard title="En Revisión" value={enRevision} icon={FileSearch} color="bg-sky-500" />
+        <StatCard title="Derivado SAG" value={derivadoSag} icon={ArrowRight} color="bg-orange-500" />
+        <StatCard title="Derivado PDI" value={derivadoPdi} icon={ArrowRight} color="bg-purple-500" />
         <StatCard title="Aprobadas" value={aprobados} icon={FileCheck} color="bg-emerald-500" />
-        <StatCard title="Rechazadas" value={rechazados} icon={FileX} color="bg-red-500" />
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">

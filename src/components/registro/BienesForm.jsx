@@ -1,6 +1,8 @@
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
+import { Checkbox } from "@/components/ui/checkbox";
+import { Badge } from "@/components/ui/badge";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Plus, Trash2, Package } from "lucide-react";
 
@@ -12,7 +14,7 @@ const TIPOS_BIENES = [
 
 export default function BienesForm({ bienes, onChange }) {
   const addBien = () => {
-    onChange([...bienes, { tipo: "", cantidad: 1, valor_estimado: 0 }]);
+    onChange([...bienes, { tipo: "", cantidad: 1, valor_estimado: 0, requiere_sag: false }]);
   };
 
   const removeBien = (index) => {
@@ -77,6 +79,22 @@ export default function BienesForm({ bienes, onChange }) {
                 onChange={(e) => updateBien(index, "valor_estimado", parseFloat(e.target.value) || 0)}
               />
             </div>
+          </div>
+
+          <div className="flex items-center gap-2 pt-1">
+            <Checkbox
+              id={`sag-${index}`}
+              checked={bien.requiere_sag || false}
+              onCheckedChange={(checked) => updateBien(index, "requiere_sag", checked)}
+            />
+            <Label htmlFor={`sag-${index}`} className="text-xs cursor-pointer">
+              Requiere SAG
+            </Label>
+            {bien.requiere_sag && (
+              <Badge variant="outline" className="text-[10px] h-5 bg-amber-50 text-amber-700 border-amber-300 ml-1">
+                Requiere SAG
+              </Badge>
+            )}
           </div>
         </div>
       ))}

@@ -1,7 +1,7 @@
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { User, CreditCard, Globe, Plane, Calendar, MapPin } from "lucide-react";
+import { User, CreditCard, Globe, Calendar, MapPin, ArrowLeftRight, Flag } from "lucide-react";
 
 const NACIONALIDADES = [
   "Chile", "Argentina", "Brasil", "Colombia", "México", "Perú", "Ecuador", "Bolivia",
@@ -10,6 +10,8 @@ const NACIONALIDADES = [
 ];
 
 const TIPOS_DOCUMENTO = ["RUT", "Pasaporte", "Cédula de Identidad", "Otro"];
+
+const TIPOS_VIAJE = ["Ingreso a Chile", "Salida de Chile"];
 
 export default function DatosPersonalesForm({ data, onChange }) {
   const update = (field, value) => onChange({ ...data, [field]: value });
@@ -78,38 +80,38 @@ export default function DatosPersonalesForm({ data, onChange }) {
 
         <div className="space-y-2">
           <Label className="text-sm font-medium flex items-center gap-2">
-            <Plane className="w-4 h-4 text-primary" /> N° Vuelo de Llegada <span className="text-destructive">*</span>
+            <MapPin className="w-4 h-4 text-primary" /> Paso Fronterizo <span className="text-destructive">*</span>
           </Label>
           <Input
-            placeholder="Ej: LA-402"
-            value={data.vuelo_llegada || ""}
-            onChange={(e) => update("vuelo_llegada", e.target.value)}
+            placeholder="Paso Los Libertadores"
+            value={data.paso_fronterizo || "Paso Los Libertadores"}
+            onChange={(e) => update("paso_fronterizo", e.target.value)}
           />
         </div>
 
         <div className="space-y-2">
           <Label className="text-sm font-medium flex items-center gap-2">
-            <MapPin className="w-4 h-4 text-primary" /> País de Procedencia
+            <Flag className="w-4 h-4 text-primary" /> País de Destino <span className="text-destructive">*</span>
           </Label>
-          <Select value={data.pais_origen || ""} onValueChange={(v) => update("pais_origen", v)}>
-            <SelectTrigger><SelectValue placeholder="País de origen del vuelo" /></SelectTrigger>
+          <Input
+            placeholder="Argentina"
+            value={data.pais_destino || ""}
+            onChange={(e) => update("pais_destino", e.target.value)}
+          />
+        </div>
+
+        <div className="space-y-2">
+          <Label className="text-sm font-medium flex items-center gap-2">
+            <ArrowLeftRight className="w-4 h-4 text-primary" /> Tipo de Viaje <span className="text-destructive">*</span>
+          </Label>
+          <Select value={data.tipo_viaje || ""} onValueChange={(v) => update("tipo_viaje", v)}>
+            <SelectTrigger><SelectValue placeholder="Seleccione tipo de viaje" /></SelectTrigger>
             <SelectContent>
-              {NACIONALIDADES.map((n) => (
-                <SelectItem key={n} value={n}>{n}</SelectItem>
+              {TIPOS_VIAJE.map((t) => (
+                <SelectItem key={t} value={t}>{t}</SelectItem>
               ))}
             </SelectContent>
           </Select>
-        </div>
-
-        <div className="space-y-2">
-          <Label className="text-sm font-medium flex items-center gap-2">
-            <Calendar className="w-4 h-4 text-primary" /> Fecha de Llegada
-          </Label>
-          <Input
-            type="date"
-            value={data.fecha_llegada || ""}
-            onChange={(e) => update("fecha_llegada", e.target.value)}
-          />
         </div>
       </div>
     </div>

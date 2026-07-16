@@ -19,9 +19,14 @@ function makeDeclaration(overrides = {}) {
     id: String(idCounter++),
     nombre_completo: overrides.nombre_completo || 'Juan Pérez',
     rut: overrides.rut || '11.111.111-1',
-    vuelo_llegada: overrides.vuelo_llegada || 'LA1234',
     codigo_qr: overrides.codigo_qr || `AD-${Math.random().toString(36).slice(2,10).toUpperCase()}`,
-    bienes: overrides.bienes || [{ tipo: 'Electrónica', descripcion: 'Teléfono', cantidad: 1, valor_estimado: 300 }],
+    paso_fronterizo: overrides.paso_fronterizo || 'Paso Los Libertadores',
+    pais_destino: overrides.pais_destino || 'Argentina',
+    tipo_viaje: overrides.tipo_viaje || 'ingreso',
+    vehiculo: overrides.vehiculo || null,
+    alimentos_o_mascotas: overrides.alimentos_o_mascotas || false,
+    derivado_a: overrides.derivado_a || null,
+    bienes: overrides.bienes || [{ tipo: 'Electrónica', descripcion: 'Teléfono', cantidad: 1, valor_estimado: 300, requiere_sag: false }],
     menores_a_cargo: overrides.menores_a_cargo || [],
     documentos_presentados: overrides.documentos_presentados || [],
     valor_total: overrides.valor_total || 300,
@@ -32,10 +37,24 @@ function makeDeclaration(overrides = {}) {
   };
 }
 
-// Seed demo data
-mockDeclarations.push(makeDeclaration({ nombre_completo: 'Juan Pérez', rut: '12.345.678-9', vuelo_llegada: 'LA1001', estado: 'pendiente', created_by_id: 'mock-viajero-001' }));
-mockDeclarations.push(makeDeclaration({ nombre_completo: 'María López', rut: '98.765.432-1', vuelo_llegada: 'LA2002', estado: 'en_revision', created_by_id: 'mock-admin-001' }));
-mockDeclarations.push(makeDeclaration({ nombre_completo: 'Carlos Ruiz', rut: '22.333.444-5', vuelo_llegada: 'LA3003', estado: 'aprobado', created_by_id: 'mock-admin-001' }));
+// Seed demo data — land border scenarios
+mockDeclarations.push(makeDeclaration({
+  nombre_completo: 'Juan Pérez', rut: '12.345.678-9',
+  paso_fronterizo: 'Paso Los Libertadores', pais_destino: 'Argentina', tipo_viaje: 'salida',
+  estado: 'pendiente', created_by_id: 'mock-viajero-001'
+}));
+mockDeclarations.push(makeDeclaration({
+  nombre_completo: 'María López', rut: '98.765.432-1',
+  paso_fronterizo: 'Paso Los Libertadores', pais_destino: 'Chile', tipo_viaje: 'ingreso',
+  vehiculo: { patente: 'ABC-1234', tipo_permiso: 'Temporal', plazo_dias: 30, pais_origen: 'Argentina' },
+  estado: 'en_revision', created_by_id: 'mock-admin-001'
+}));
+mockDeclarations.push(makeDeclaration({
+  nombre_completo: 'Carlos Ruiz', rut: '22.333.444-5',
+  paso_fronterizo: 'Paso Los Libertadores', pais_destino: 'Chile', tipo_viaje: 'ingreso',
+  alimentos_o_mascotas: true,
+  estado: 'aprobado', created_by_id: 'mock-admin-001'
+}));
 
 export const base44 = {
   auth: {
@@ -78,6 +97,18 @@ export const base44 = {
       async update(id, patch) {
         const i = mockDeclarations.find(x => x.id === String(id));
         if (i) Object.assign(i, patch);
+        return i;
+      },
+      async derivar(id, entidad) {
+        const i = mockDeclarations.find(x => x.id === String(id));
+        if (!i) return null;
+        if (entidad === 'SAG') {
+          i.derivado_a = 'SAG';
+          i.estado = 'derivado_sag';
+        } else if (entidad === 'PDI') {
+          i.derivado_a = 'PDI';
+          i.estado = 'derivado_pdi';
+        }
         return i;
       }
     }

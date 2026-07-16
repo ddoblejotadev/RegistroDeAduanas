@@ -8,14 +8,14 @@
     },
     "rut": {
       "type": "string",
-      "description": "RUT o n\u00famero de documento del viajero"
+      "description": "RUT o número de documento del viajero"
     },
     "tipo_documento": {
       "type": "string",
       "enum": [
         "RUT",
         "Pasaporte",
-        "C\u00e9dula de Identidad",
+        "Cédula de Identidad",
         "Otro"
       ],
       "description": "Tipo de documento de identidad"
@@ -29,18 +29,54 @@
       "format": "date",
       "description": "Fecha de nacimiento del viajero"
     },
-    "vuelo_llegada": {
+    "paso_fronterizo": {
       "type": "string",
-      "description": "N\u00famero de vuelo de llegada"
+      "description": "Paso fronterizo terrestre — ej. Paso Los Libertadores"
     },
-    "pais_origen": {
+    "pais_destino": {
       "type": "string",
-      "description": "Pa\u00eds de procedencia del vuelo"
+      "description": "País de destino del viajero"
     },
-    "fecha_llegada": {
+    "tipo_viaje": {
       "type": "string",
-      "format": "date",
-      "description": "Fecha estimada de llegada"
+      "enum": [
+        "ingreso",
+        "salida"
+      ],
+      "description": "Tipo de viaje: ingreso o salida del país"
+    },
+    "vehiculo": {
+      "type": "object",
+      "description": "Información del vehículo (opcional)",
+      "properties": {
+        "patente": {
+          "type": "string"
+        },
+        "tipo_permiso": {
+          "type": "string"
+        },
+        "plazo_dias": {
+          "type": "number"
+        },
+        "pais_origen": {
+          "type": "string"
+        }
+      }
+    },
+    "alimentos_o_mascotas": {
+      "type": "boolean",
+      "default": false,
+      "description": "Indica si el viajero transporta alimentos o mascotas"
+    },
+    "derivado_a": {
+      "type": "string",
+      "enum": [
+        null,
+        "SAG",
+        "PDI"
+      ],
+      "default": null,
+      "description": "Entidad a la que fue derivada la declaración"
     },
     "menores_a_cargo": {
       "type": "array",
@@ -63,24 +99,28 @@
           },
           "parentesco": {
             "type": "string"
+          },
+          "autorizacion_notarial": {
+            "type": "boolean",
+            "description": "Indica si se presentó autorización notarial para el menor"
           }
         }
       }
     },
     "documentos_presentados": {
       "type": "array",
-      "description": "Documentos que el viajero indica que presentar\u00e1",
+      "description": "Documentos que el viajero indica que presentará",
       "items": {
         "type": "string",
         "enum": [
-          "Pasaporte",
-          "Visa",
-          "Tarjeta de Residencia",
+          "Cédula de Identidad",
+          "Permiso de Circulación",
+          "Seguro del Automóvil",
+          "Certificado de Vacunación",
           "Permiso de Menor",
-          "Certificado de Vacunaci\u00f3n",
-          "Seguro de Viaje",
-          "Boletos de Avi\u00f3n",
-          "Declaraci\u00f3n Jurada"
+          "Declaración Jurada de Alimentos",
+          "Documentación del Vehículo",
+          "Pasaporte"
         ]
       }
     },
@@ -101,6 +141,10 @@
           },
           "valor_estimado": {
             "type": "number"
+          },
+          "requiere_sag": {
+            "type": "boolean",
+            "description": "Indica si el bien requiere revisión del SAG"
           }
         }
       }
@@ -114,15 +158,17 @@
       "enum": [
         "pendiente",
         "en_revision",
+        "derivado_sag",
+        "derivado_pdi",
         "aprobado",
         "rechazado"
       ],
       "default": "pendiente",
-      "description": "Estado de la declaraci\u00f3n"
+      "description": "Estado de la declaración"
     },
     "codigo_qr": {
       "type": "string",
-      "description": "C\u00f3digo identificador para el QR"
+      "description": "Código identificador para el QR"
     },
     "notas_funcionario": {
       "type": "string",
@@ -133,6 +179,8 @@
     "nombre_completo",
     "rut",
     "nacionalidad",
-    "vuelo_llegada"
+    "paso_fronterizo",
+    "pais_destino",
+    "tipo_viaje"
   ]
 }
